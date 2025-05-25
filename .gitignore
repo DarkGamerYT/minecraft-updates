@@ -1,2 +1,8 @@
+/.env
+
 /node_modules
+/bun.lock
+/deno.lock
 /package-lock.json
+
+/data

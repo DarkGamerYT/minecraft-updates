@@ -1,13 +1,18 @@
 {
-    "version": "1.0.3",
-    "main": "index.js",
+    "name": "minecraft-updates",
+    "version": "1.0.0",
+    "module": "src/index.js",
+    "engines": {
+        "deno": ">=2.3"
+    },
     "scripts": {
-        "start": "node index.js",
-        "setup": "node src/changelogs.js && node src/bds.js"
+        "start": "deno run -A main.ts -A src/index.ts",
+        "data": "deno run --allow-all src/data.ts"
     },
     "dependencies": {
-        "discord.js": "^14.10.2",
-        "dotenv": "^16.0.3",
-        "node-html-parser": "^6.1.5"
+        "@types/deno": "^2.3.0",
+        "discord.js": "^14.19.3",
+        "dotenv": "^16.5.0",
+        "node-html-parser": "^7.0.1"
     }
 }

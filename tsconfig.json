@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "types": [ "@types/deno" ],
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "dom.asynciterable",
+            "deno.ns"
+        ],
+        
+        "strict": true,
+        "noImplicitAny": false
+    }
+}
