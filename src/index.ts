@@ -1,6 +1,4 @@
 import fs from "node:fs";
-import dotenv from "npm:dotenv";
-dotenv.config();
 
 import Logger, { LogLevel } from "./util/logger.ts";
 Logger.log(LogLevel.Info, "Starting...");

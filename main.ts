@@ -1,3 +1,6 @@
+import dotenv from "npm:dotenv";
+dotenv.config();
+
 import console from "node:console";
 if (import.meta.main) {
     await main();
