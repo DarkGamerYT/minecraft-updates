@@ -4,7 +4,7 @@ import Logger, { LogLevel } from "./util/logger.ts";
 Logger.log(LogLevel.Info, "Starting...");
 
 const { version } = JSON.parse(fs.readFileSync("package.json").toString());
-Logger.log(LogLevel.Debug, "Version:", version);
+Logger.log(LogLevel.Info, "Version:", version);
 
 // Integrations
 import { emitChangelog, emitPlatformRelease, emitBDS } from "../integrations/index.ts";
@@ -33,6 +33,7 @@ async function platformLoop(isPreview: boolean, data: ArticleData) {
         if (data.version !== platform.latestVersion)
             continue;
 
+        Logger.log(LogLevel.Debug, "New platform release:", platform.name, "- version:", platform.latestVersion);
         if (platform.name === "Dedicated") {
             emitBDS({ isPreview, version: data.version });
         }
@@ -41,12 +42,16 @@ async function platformLoop(isPreview: boolean, data: ArticleData) {
         };
     };
 
-    //const allDone = Platforms.every((platform) =>
-    //    platform.latestVersion === data.version
-    //    && platform.fetchPreview === isPreview);
+    const allDone = Platforms
+        .filter((platform) => platform.fetchPreview === isPreview)
+        .every((platform) =>
+            platform.latestVersion === data.version
+            && platform.fetchPreview === isPreview
+        );
 
-    //if (true === allDone)
-    //    return;
+    const timeSinceRelease = new Date().getTime() - new Date(data.article.updated_at).getTime();
+    if (true === allDone || timeSinceRelease > 24 * 60 * 60)
+        return;
 
     await new Promise((resolve) => setTimeout(resolve, 15000)); // Sleep for 15 seconds
     platformLoop(isPreview, data);
@@ -61,8 +66,6 @@ function loop() {
             if (preview === data.version)
                 return;
 
-            Logger.log(LogLevel.Info, data.article.title);
-
             emitChangelog(isPreview, false, data);
         }
         else {
@@ -70,13 +73,13 @@ function loop() {
             if (stable === data.version)
                 return;
 
-            Logger.log(LogLevel.Info, data.article.title);
-
             const patch = Changelog.extractVersion(data.version)[2];
             const isHotfix = patch > Math.floor(patch / 10) * 10;
 
             emitChangelog(isPreview, isHotfix, data);
         };
+
+        Logger.log(LogLevel.Debug, "New release post:", data.article.title);
 
         platformLoop(isPreview, data);
         Changelog.saveArticle(isPreview, data);
