@@ -1,6 +1,6 @@
 import { Platform } from "./common.ts";
 export default class iOS extends Platform {
-    public name: string = "iOS AppStore";
+    public name: string = "iOS App Store";
     public override download: string = "https://apps.apple.com/app/apple-store/id479516143";
 
     public async fetchLatestVersion(): Promise<string> {

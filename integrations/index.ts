@@ -3,7 +3,12 @@ import { Integration, BDS } from "./integration.ts";
 import Discord from "./discord/index.ts";
 
 const Integrations: Integration[] = [];
-Integrations.push(new Discord);
+if (process.env.DISCORD_INTEGRATION !== undefined) {
+    Integrations.push(new Discord);
+}
+if (process.env.MASTO_INTEGRATION !== undefined) {
+    Integrations.push(new Mastodon);
+}
 
 
 // Event emitter stuff
@@ -27,6 +32,7 @@ export function emitBDS(bds: BDS) {
 };
 
 import { Platform } from "../src/platforms/common.ts"
+import Mastodon from "./mastodon/index.ts";
 export function emitPlatformRelease(platform: Platform) {
     for (let i = 0; i < Integrations.length; i++) {
         const integration = Integrations[i];
