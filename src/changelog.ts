@@ -97,7 +97,10 @@ export function formatArticle(article: any): ArticleData {
     const imageSrc = parsed.getElementsByTagName("img")[0]?.getAttribute("src");
 
     return {
-        version: Changelog.extractVersion(article.name)?.filter((i) => !Number.isNaN(i))?.join("."),
+        version: Changelog
+            .extractVersion(article.name)
+            ?.filter((i) => !Number.isNaN(i))
+            ?.join("."),
         thumbnail: (
             imageSrc?.startsWith("https://feedback.minecraft.net/hc/article_attachments/")
             ? imageSrc : null
