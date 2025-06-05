@@ -4,6 +4,7 @@
     "npm:@types/deno@^2.3.0": "2.3.0",
     "npm:discord.js@^14.19.3": "14.19.3",
     "npm:dotenv@^16.5.0": "16.5.0",
+    "npm:masto@^7.1.0": "7.1.0_ws@8.18.2",
     "npm:node-html-parser@^7.0.1": "7.0.1"
   },
   "npm": {
@@ -96,6 +97,46 @@
     "boolbase@1.0.0": {
       "integrity": "sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww=="
     },
+    "camel-case@4.1.2": {
+      "integrity": "sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==",
+      "dependencies": [
+        "pascal-case",
+        "tslib"
+      ]
+    },
+    "capital-case@1.0.4": {
+      "integrity": "sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==",
+      "dependencies": [
+        "no-case",
+        "tslib",
+        "upper-case-first"
+      ]
+    },
+    "change-case@4.1.2": {
+      "integrity": "sha512-bSxY2ws9OtviILG1EiY5K7NNxkqg/JnRnFxLtKQ96JaviiIxi7djMrSd0ECT9AC+lttClmYwKw53BWpOMblo7A==",
+      "dependencies": [
+        "camel-case",
+        "capital-case",
+        "constant-case",
+        "dot-case",
+        "header-case",
+        "no-case",
+        "param-case",
+        "pascal-case",
+        "path-case",
+        "sentence-case",
+        "snake-case",
+        "tslib"
+      ]
+    },
+    "constant-case@3.0.4": {
+      "integrity": "sha512-I2hSBi7Vvs7BEuJDr5dDHfzb/Ruj3FyvFyh7KLilAjNQw3Be+xgqUBA2W6scVEcL0hL1dwPRtIqEPVUCKkSsyQ==",
+      "dependencies": [
+        "no-case",
+        "tslib",
+        "upper-case"
+      ]
+    },
     "css-select@5.1.0": {
       "integrity": "sha512-nwoRF1rvRRnnCqqY7updORDsuqKzqYJ28+oSMaJMMgOauh3fvwHqMS7EZpIPqK8GL+g9mKxF1vP/ZjSeNjEVHg==",
       "dependencies": [
@@ -155,11 +196,21 @@
         "domhandler"
       ]
     },
+    "dot-case@3.0.4": {
+      "integrity": "sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==",
+      "dependencies": [
+        "no-case",
+        "tslib"
+      ]
+    },
     "dotenv@16.5.0": {
       "integrity": "sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg=="
     },
     "entities@4.5.0": {
       "integrity": "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw=="
+    },
+    "events-to-async@2.0.1": {
+      "integrity": "sha512-RtnLYrMbXp4JkZIoZu+3VTqV21bNVBlJBZ4NmtwvMNqSE3qouhxv2gvLE4JJDaQc54ioPkrX74V6x+hp/hqjkQ=="
     },
     "fast-deep-equal@3.1.3": {
       "integrity": "sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q=="
@@ -168,14 +219,50 @@
       "integrity": "sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==",
       "bin": true
     },
+    "header-case@2.0.4": {
+      "integrity": "sha512-H/vuk5TEEVZwrR0lp2zed9OCo1uAILMlx0JEMgC26rzyJJ3N1v6XkwHHXJQdR2doSjcGPM6OKPYoJgf0plJ11Q==",
+      "dependencies": [
+        "capital-case",
+        "tslib"
+      ]
+    },
+    "isomorphic-ws@5.0.0_ws@8.18.2": {
+      "integrity": "sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==",
+      "dependencies": [
+        "ws"
+      ]
+    },
     "lodash.snakecase@4.1.1": {
       "integrity": "sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw=="
     },
     "lodash@4.17.21": {
       "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
     },
+    "lower-case@2.0.2": {
+      "integrity": "sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
     "magic-bytes.js@1.12.1": {
       "integrity": "sha512-ThQLOhN86ZkJ7qemtVRGYM+gRgR8GEXNli9H/PMvpnZsE44Xfh3wx9kGJaldg314v85m+bFW6WBMaVHJc/c3zA=="
+    },
+    "masto@7.1.0_ws@8.18.2": {
+      "integrity": "sha512-jIWQr8WIjGOh3bbE4AuS1FIjsMvXbYpUHHQoijQ9Ueb4YqE4fOxWf1eU6ZRHOiBBjTa1Tm20pciRqJTy6IMa7Q==",
+      "dependencies": [
+        "change-case",
+        "events-to-async",
+        "isomorphic-ws",
+        "ts-custom-error",
+        "ws"
+      ]
+    },
+    "no-case@3.0.4": {
+      "integrity": "sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==",
+      "dependencies": [
+        "lower-case",
+        "tslib"
+      ]
     },
     "node-html-parser@7.0.1": {
       "integrity": "sha512-KGtmPY2kS0thCWGK0VuPyOS+pBKhhe8gXztzA2ilAOhbUbxa9homF1bOyKvhGzMLXUoRds9IOmr/v5lr/lqNmA==",
@@ -190,6 +277,45 @@
         "boolbase"
       ]
     },
+    "param-case@3.0.4": {
+      "integrity": "sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==",
+      "dependencies": [
+        "dot-case",
+        "tslib"
+      ]
+    },
+    "pascal-case@3.1.2": {
+      "integrity": "sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==",
+      "dependencies": [
+        "no-case",
+        "tslib"
+      ]
+    },
+    "path-case@3.0.4": {
+      "integrity": "sha512-qO4qCFjXqVTrcbPt/hQfhTQ+VhFsqNKOPtytgNKkKxSoEp3XPUQ8ObFuePylOIok5gjn69ry8XiULxCwot3Wfg==",
+      "dependencies": [
+        "dot-case",
+        "tslib"
+      ]
+    },
+    "sentence-case@3.0.4": {
+      "integrity": "sha512-8LS0JInaQMCRoQ7YUytAo/xUu5W2XnQxV2HI/6uM6U7CITS1RqPElr30V6uIqyMKM9lJGRVFy5/4CuzcixNYSg==",
+      "dependencies": [
+        "no-case",
+        "tslib",
+        "upper-case-first"
+      ]
+    },
+    "snake-case@3.0.4": {
+      "integrity": "sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==",
+      "dependencies": [
+        "dot-case",
+        "tslib"
+      ]
+    },
+    "ts-custom-error@3.3.1": {
+      "integrity": "sha512-5OX1tzOjxWEgsr/YEUWSuPrQ00deKLh6D7OTWcvNHm12/7QPyRh8SYpyWvA4IZv8H/+GQWQEh/kwo95Q9OVW1A=="
+    },
     "ts-mixer@6.0.4": {
       "integrity": "sha512-ufKpbmrugz5Aou4wcr5Wc1UUFWOLhq+Fm6qa6P0w0K5Qw2yhaUoiWszhCVuNQyNwrlGiscHOmqYoAox1PtvgjA=="
     },
@@ -202,6 +328,18 @@
     "undici@6.21.1": {
       "integrity": "sha512-q/1rj5D0/zayJB2FraXdaWxbhWiNKDvu8naDT2dl1yTlvJp4BLtOcp2a5BvgGNQpYYJzau7tf1WgKv3b+7mqpQ=="
     },
+    "upper-case-first@2.0.2": {
+      "integrity": "sha512-514ppYHBaKwfJRK/pNC6c/OxfGa0obSnAl106u97Ed0I625Nin96KAjttZF6ZL3e1XLtphxnqrOi9iWgm+u+bg==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
+    "upper-case@2.0.2": {
+      "integrity": "sha512-KgdgDGJt2TpuwBUIjgG6lzw2GWFRCW9Qkfkiv0DxqHHLYJHmtmdUIKcZd8rHgFSjopVTlw6ggzCm1b8MFQwikg==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
     "ws@8.18.2": {
       "integrity": "sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ=="
     }
@@ -212,6 +350,7 @@
         "npm:@types/deno@^2.3.0",
         "npm:discord.js@^14.19.3",
         "npm:dotenv@^16.5.0",
+        "npm:masto@^7.1.0",
         "npm:node-html-parser@^7.0.1"
       ]
     }

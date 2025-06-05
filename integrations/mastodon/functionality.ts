@@ -14,20 +14,22 @@ async function postChangelog(
     const status = `${emoji} New Minecraft Bedrock Edition ${type}: **${data.version}**\n\n${data.article.url}`
 
     const mediaIds: string[] = []
-    if (typeof data.thumbnail === 'string') {
-        const image = await fetch(data.thumbnail)
-        mediaIds.push((await masto.client.v2.media.create({
+    if (typeof data.thumbnail === "string") {
+        const image = await fetch(data.thumbnail);
+        const attachment = await masto.client.v2.media.create({
             file: await image.blob(),
             description: ""
-        })).id)
-    }
+        });
+        
+        mediaIds.push(attachment.id);
+    };
 
     return masto.client.v1.statuses.create({
         visibility: "public",
         status,
         mediaIds
-    })
-}
+    });
+};
 
 async function bdsRelease(masto: Mastodon, status: mastodon.v1.Status, bds: BDS) {
     const statusText = "Bedrock Dedicated Server for "
@@ -37,8 +39,8 @@ async function bdsRelease(masto: Mastodon, status: mastodon.v1.Status, bds: BDS)
     await masto.client.v1.statuses.create({
         inReplyToId: status.id,
         status: statusText
-    })
-}
+    });
+};
 
 async function platformRelease(masto: Mastodon, status: mastodon.v1.Status, platform: Platform) {
     const statusText = `**${platform.fetchPreview ? "Minecraft Preview" : "Minecraft Bedrock"} v${platform.latestVersion}**`
@@ -47,8 +49,8 @@ async function platformRelease(masto: Mastodon, status: mastodon.v1.Status, plat
     await masto.client.v1.statuses.create({
         inReplyToId: status.id,
         status: statusText
-    })
-}
+    });
+};
 
 export async function newChangelog(
     masto: Mastodon,
@@ -58,41 +60,36 @@ export async function newChangelog(
     const status = postChangelog(masto, isPreview, isHotfix, data)
 
     // Platform Release
-        const platformListener = async (platform: Platform) => {
-            const post = await status;
-            if (post == void 0) {
-                masto.off("platformRelease", platformListener);
-                return;
-            };
-    
-            if (isPreview !== platform.fetchPreview
-                || data.version !== platform.latestVersion)
-                return;
-    
-            platformRelease(masto, post, platform);
+    const platformListener = async (platform: Platform) => {
+        const post = await status;
+        if (post == void 0) {
             masto.off("platformRelease", platformListener);
+            return;
         };
-        masto.on("platformRelease", platformListener);
+    
+        if (isPreview !== platform.fetchPreview
+            || data.version !== platform.latestVersion)
+            return;
+    
+        platformRelease(masto, post, platform);
+        masto.off("platformRelease", platformListener);
+    };
+    masto.on("platformRelease", platformListener);
                         
-        // BDS Release
-        const bdsListener = async (bds: BDS) => {
-            const post = await status;
-            if (post == void 0) {
-                masto.off("platformRelease", platformListener);
-                return;
-            };
-    
-            if (isPreview !== bds.isPreview
-                || data.version !== bds.version)
-                return;
-    
-            bdsRelease(masto, post, bds);
-            masto.off("BDS", bdsListener);
+    // BDS Release
+    const bdsListener = async (bds: BDS) => {
+        const post = await status;
+        if (post == void 0) {
+            masto.off("platformRelease", platformListener);
+            return;
         };
-        masto.on("BDS", bdsListener);
     
-    const post = await status;
-    if (post) {
-        return post;
-    }
-}
+        if (isPreview !== bds.isPreview
+            || data.version !== bds.version)
+            return;
+    
+        bdsRelease(masto, post, bds);
+        masto.off("BDS", bdsListener);
+    };
+    masto.on("BDS", bdsListener);
+};

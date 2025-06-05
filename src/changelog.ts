@@ -45,7 +45,11 @@ export default class Changelog {
         // Find latest Stable/Hotfix article
         const stable = articles.find((article: any) =>
             article.section_id == 360001186971
-            && (article.title.includes("MCPE") || article.title.includes("Bedrock")));
+            && (
+                !article.title.includes("Java Edition")
+                || article.title.includes("MCPE")
+                || article.title.includes("Bedrock")
+            ));
             
         callback(false, formatArticle(stable));
     };
