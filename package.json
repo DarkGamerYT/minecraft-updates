@@ -7,7 +7,7 @@
     },
     "scripts": {
         "start": "deno run -A main.ts -A src/index.ts",
-        "data": "deno run --allow-all src/data.ts"
+        "changelogs": "deno run --allow-all src/data.ts"
     },
     "dependencies": {
         "@types/deno": "^2.3.0",

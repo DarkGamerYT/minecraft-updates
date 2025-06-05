@@ -18,7 +18,11 @@ import { ArticleData, formatArticle } from "./changelog.ts";
 
         const stable = articles.filter((article: any) =>
             article.section_id == 360001186971
-            && (article.title.includes("MCPE") || article.title.includes("Bedrock")));
+            && (
+                !article.title.includes("Java Edition")
+                || article.title.includes("MCPE")
+                || article.title.includes("Bedrock")
+            ));
 
         stableArticles.push(...stable.map(formatArticle));
 
