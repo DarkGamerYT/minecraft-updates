@@ -157,6 +157,8 @@ async function platformRelease(post: ForumThreadChannel, platform: Platform) {
         if (platform.name === "Microsoft Store") {
             pingMembers(message);
         };
+
+        message.pin().catch(() => {});
     }
     catch(error) {
         console.error(error);
@@ -184,10 +186,12 @@ async function bdsRelease(post: ForumThreadChannel, bds: BDS) {
     ]);
     
     try {
-        await post.send({
+        const message = await post.send({
             flags: MessageFlags.IsComponentsV2,
             components: [ container, row ],
         });
+
+        message.pin().catch(() => {});
     }
     catch(error) {
         console.error(error);

@@ -36,8 +36,8 @@ export default class Logger {
         const date = new Date(epoch);
         const time = date.toLocaleTimeString();
 
-        const [ month, day, year ] = date.toLocaleDateString().split("/");
-        return `${year}-${month}-${day} ${time}`;
+        const formattedDate = date.toISOString().slice(0, 10);
+        return formattedDate.concat(" ", time);
     };
 
     public static log(level: LogLevel, ...data: any[]) {
