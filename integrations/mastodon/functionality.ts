@@ -9,7 +9,7 @@ async function postChangelog(
     isPreview: boolean, isHotfix: boolean,
     data: ArticleData
 ) {
-    const emoji = isPreview ? "🍌" : (isHotfix ? "🌶" : "🍐");
+    const emoji = isPreview ? "🍌" : (isHotfix ? "🌶" : "🍋‍🟩");
     const type = isPreview ? "Preview" : (isHotfix ? "Hotfix" : "Stable release");
     const status = `${emoji} New Minecraft Bedrock Edition ${type}: **${data.version}**\n\n${data.article.url}\n\n#MinecraftBedrockUpdates`;
 
