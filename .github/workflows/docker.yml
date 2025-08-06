@@ -38,7 +38,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME,, }}:latest
           platforms: linux/${{ matrix.arch }}
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
