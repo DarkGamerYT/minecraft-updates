@@ -11,3 +11,6 @@ WORKDIR /app
 COPY --from=builder /app .
 RUN chmod +x start.sh
 CMD [ "/app/start.sh" ]
+
+LABEL org.opencontainers.image.source="https://github.com/DarkGamerYT/minecraft-updates"
+LABEL org.opencontainers.image.description="A Minecraft Bedrock updates tracker, used to fetch, archive, and serve version changelog info."
