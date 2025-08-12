@@ -38,7 +38,7 @@ async function postChangelog(
     if (channel == void 0 || channel.type !== ChannelType.GuildForum)
         return;
 
-    const emoji = isPreview ? "🍌" : (isHotfix ? "🌶" : "🍐");
+    const emoji = isPreview ? "🍌" : (isHotfix ? "🌶" : "🍋‍🟩");
     const type = isPreview ? "Preview" : (isHotfix ? "Hotfix" : "Stable");
 
     const threads = channel.threads;

@@ -25,8 +25,7 @@ export default class Changelog {
                 const [ _, major, minor, patch, revision ] = result.map(Number);
                 return [ major, minor, patch || 0, revision ];
             };
-        }
-        catch {};
+        } catch {};
         return [ 0, 0, 0 ];
     };
 

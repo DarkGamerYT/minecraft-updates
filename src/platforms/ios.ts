@@ -10,7 +10,10 @@ export default class iOS extends Platform {
 
             this.latestVersion = data["version"];
         }
-        catch {};
+        catch(e) {
+            console.error(this.name.concat(":"), e);
+        };
+        
         return this.latestVersion;
     };
 };

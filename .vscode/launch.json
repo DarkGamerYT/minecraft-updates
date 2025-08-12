@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Deno",
+            "env": {},
+            "runtimeExecutable": "deno",
+            "runtimeArgs": [
+                "run",
+                "debug"
+            ],
+            "attachSimplePort": 9229,
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

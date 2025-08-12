@@ -22,7 +22,10 @@ export default class Dedicated extends Platform {
                 this.latestVersion = [ major, minor, patch ].filter(Boolean).join(".");
             };
         }
-        catch {};
+        catch(e) {
+            console.error(this.name.concat(":"), e);
+        };
+        
         return this.latestVersion;
     };
 };

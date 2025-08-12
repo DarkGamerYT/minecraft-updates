@@ -7,13 +7,14 @@
     },
     "scripts": {
         "start": "deno run -A main.ts -A src/index.ts",
+        "debug": "deno run --inspect-wait -A src/index.ts",
         "changelogs": "deno run --allow-all src/data.ts"
     },
     "dependencies": {
         "@types/deno": "^2.3.0",
         "discord.js": "^14.19.3",
         "dotenv": "^16.5.0",
-        "masto": "^7.1.0",
-        "node-html-parser": "^7.0.1"
+        "google-play-scraper": "^10.0.1",
+        "masto": "^7.1.0"
     }
 }

@@ -1,60 +1,58 @@
-import htmlParser from "npm:node-html-parser";
 import Changelog from "../changelog.ts";
 
 import { Platform } from "./common.ts";
 export default class Windows extends Platform {
     public name: string = "Microsoft Store";
 
+    private readonly PREVIEW_ID = "9P5X4QVLC2XR";
+    private readonly RELEASE_ID = "9NBLGGH2JHXJ";
+
     public async fetchLatestVersion(): Promise<string> {
         try {
+            const productId = this.fetchPreview ? this.PREVIEW_ID : this.RELEASE_ID;
             const response = await fetch(
-                "https://store.rg-adguard.net/api/GetFiles", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: (
-                        "type=PackageFamilyName&url=Microsoft."
-                        + (this.fetchPreview ? "MinecraftWindowsBeta" : "MinecraftUWP" )
-                        + "_8wekyb3d8bbwe&ring=RP&lang=en-US"
-                    ),
+                `https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=${productId}&market=GB&languages=en-GB,neutral`, {
+                    method: "GET",
+                    headers: {
+                        "User-Agent": "Mozilla/5.0",
+                        "Content-Type": "application/json"
+                    },
                 },
             );
-            const text = await response.text();
-            if (text.includes("The server returned an empty list."))
+
+            const data = await response.json();
+            if (data.Products.length === 0 || !data.Products[0].DisplaySkuAvailabilities)
                 return this.latestVersion;
 
-            const parsed = htmlParser.parse(text);
-            const body = (
-                parsed.getElementsByTagName("a")
-                .filter((element) => (
-                    element.innerText.includes(
-                        this.fetchPreview ? "MinecraftWindowsBeta" : "MinecraftUWP"
-                    )
-                    && element.innerText.includes(".appx")
-                ))
-            )[0];
+            const sku = data.Products[0].DisplaySkuAvailabilities[0].Sku;
+            const pkg = sku.Properties.Packages.find((pkg) => pkg.Architectures.includes("x64"));
+            if (pkg.PackageFullName == void 0)
+                return this.latestVersion;
 
-            const version = Changelog.extractVersion(body.innerText);
+            const version = Changelog.extractVersion(pkg.PackageFullName as string);
+            let [ major, minor, patch, revision ] = version;
             if (true === this.fetchPreview) {
-                this.download = "https://www.microsoft.com/store/productId/9P5X4QVLC2XR";
-
-                let [ major, minor, patch, revision ] = version;
+                this.download = "https://www.microsoft.com/store/productId/" + this.PREVIEW_ID;
 
                 let string = patch.toString();
-                revision = Number(string.slice(2, 4));
-                patch = Number(string.slice(0, 2));
+                revision = Number(string.slice(string.length - 2, string.length));
+                patch = Number(string.slice(0, string.length - 2));
 
                 this.latestVersion = [ major, minor, patch, revision ].filter(Boolean).join(".");
             }
             else {
-                this.download = "https://www.microsoft.com/store/productId/9NBLGGH2JHXJ";
+                this.download = "https://www.microsoft.com/store/productId/" + this.RELEASE_ID;
 
-                let [ major, minor, patch ] = version;
-                patch = Number(patch.toString().slice(0, 2));
+                let string = patch.toString();
+                patch = Number(string.slice(0, string.length - 2));
 
                 this.latestVersion = [ major, minor, patch ].filter(Boolean).join(".");
             };
         }
-        catch {};
+        catch(e) {
+            console.error(this.name.concat(":"), e);
+        };
+        
         return this.latestVersion;
     };
 };

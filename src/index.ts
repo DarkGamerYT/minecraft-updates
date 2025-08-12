@@ -16,11 +16,13 @@ import { Platform } from "./platforms/common.ts";
 import Dedicated from "./platforms/dedicated.ts";
 import Windows from "./platforms/windows.ts";
 import iOS from "./platforms/ios.ts";
+import Android from "./platforms/android.ts";
 
 export const Platforms: Platform[] = [];
 Platforms.push(new Dedicated, new Dedicated(true));
 Platforms.push(new Windows, new Windows(true));
 Platforms.push(new iOS);
+Platforms.push(new Android);
 
 // Platform loop
 async function platformLoop(isPreview: boolean, data: ArticleData) {
@@ -29,11 +31,11 @@ async function platformLoop(isPreview: boolean, data: ArticleData) {
             || data.version === platform.latestVersion)
             continue;
 
-        await platform.fetchLatestVersion();
-        if (data.version !== platform.latestVersion)
+        const version = await platform.fetchLatestVersion();
+        if (data.version !== version)
             continue;
 
-        Logger.log(LogLevel.Debug, "New platform release:", platform.name, "- version:", platform.latestVersion);
+        Logger.log(LogLevel.Debug, "New platform release:", platform.name, "- version:", version);
         if (platform.name === "Dedicated") {
             emitBDS({ isPreview, version: data.version });
         }
