@@ -83,8 +83,8 @@ function loop() {
 
         Logger.log(LogLevel.Debug, "New release post:", data.article.title);
 
-        platformLoop(isPreview, data);
         Changelog.saveArticle(isPreview, data);
+        platformLoop(isPreview, data);
     }).catch(() => {});
 };
 

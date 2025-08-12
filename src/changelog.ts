@@ -83,9 +83,12 @@ export default class Changelog {
         const article = path.join("data",
             (isPreview ? "preview-articles" : "stable-articles").concat(".json"));
 
-        const articles: ArticleData[] = JSON.parse(
-            fs.readFileSync(article).toString()
-        );
+        let articles: ArticleData[] = [];
+        if (fs.existsSync(article)) {
+            articles = JSON.parse(
+                fs.readFileSync(article).toString()
+            );
+        };
 
         articles.reverse();
         articles.push(data);
