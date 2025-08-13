@@ -42,7 +42,7 @@ async function platformLoop(isPreview: boolean, data: ArticleData) {
     const allDone = Platforms
         .filter((platform) => platform.fetchPreview === isPreview)
         .every((platform) =>
-            platform.latestVersion === data.version
+            platform.latestVersion.encode() === data.version.encode()
             && platform.fetchPreview === isPreview
         );
 
