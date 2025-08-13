@@ -2,11 +2,12 @@ import gplay from "npm:google-play-scraper";
 import Changelog from "../changelog.ts";
 
 import { Platform } from "./common.ts";
+import Version from "../util/version.ts";
 export default class Android extends Platform {
     public name: string = "Google Play Store";
     public override download: string = "https://play.google.com/store/apps/details?id=com.mojang.minecraftpe";
 
-    public async fetchLatestVersion(): Promise<string> {
+    public async fetchLatestVersion(): Promise<Version> {
         try {
             const data = await gplay.app({
                 appId: "com.mojang.minecraftpe",
@@ -14,14 +15,7 @@ export default class Android extends Platform {
                 country: "us",
             });
 
-            const version = Changelog.extractVersion(data.version);
-            let [ major, minor, patch, revision ] = version;
-            if (true === this.fetchPreview) {
-                this.latestVersion = [ major, minor, patch, revision ].filter(Boolean).join(".");
-            }
-            else {
-                this.latestVersion = [ major, minor, patch ].filter(Boolean).join(".");
-            };
+            this.latestVersion = Version.fromString(data.version);
         }
         catch(e) {
             console.error(this.name.concat(":"), e);

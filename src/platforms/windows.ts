@@ -1,13 +1,19 @@
-import Changelog from "../changelog.ts";
-
 import { Platform } from "./common.ts";
+import Version from "../util/version.ts";
 export default class Windows extends Platform {
     public name: string = "Microsoft Store";
 
     private readonly PREVIEW_ID = "9P5X4QVLC2XR";
     private readonly RELEASE_ID = "9NBLGGH2JHXJ";
 
-    public async fetchLatestVersion(): Promise<string> {
+    public async fetchLatestVersion(): Promise<Version> {
+        if (true === this.fetchPreview) {
+            this.download = "https://www.microsoft.com/store/productId/" + this.PREVIEW_ID;
+        }
+        else {
+            this.download = "https://www.microsoft.com/store/productId/" + this.RELEASE_ID;
+        };
+
         try {
             const productId = this.fetchPreview ? this.PREVIEW_ID : this.RELEASE_ID;
             const response = await fetch(
@@ -29,25 +35,16 @@ export default class Windows extends Platform {
             if (pkg.PackageFullName == void 0)
                 return this.latestVersion;
 
-            const version = Changelog.extractVersion(pkg.PackageFullName as string);
-            let [ major, minor, patch, revision ] = version;
-            if (true === this.fetchPreview) {
-                this.download = "https://www.microsoft.com/store/productId/" + this.PREVIEW_ID;
+            const version = Version.fromString(pkg.PackageFullName as string);
+            let string = version.patch.toString();
 
-                let string = patch.toString();
-                revision = Number(string.slice(string.length - 2, string.length));
-                patch = Number(string.slice(0, string.length - 2));
-
-                this.latestVersion = [ major, minor, patch, revision ].filter(Boolean).join(".");
-            }
-            else {
-                this.download = "https://www.microsoft.com/store/productId/" + this.RELEASE_ID;
-
-                let string = patch.toString();
-                patch = Number(string.slice(0, string.length - 2));
-
-                this.latestVersion = [ major, minor, patch ].filter(Boolean).join(".");
-            };
+            this.latestVersion = new Version(
+                version.major,
+                version.minor,
+                Number(string.slice(0, string.length - 2)),
+                this.fetchPreview ? Number(string.slice(string.length - 2, string.length)) : 0,
+                this.fetchPreview
+            );
         }
         catch(e) {
             console.error(this.name.concat(":"), e);

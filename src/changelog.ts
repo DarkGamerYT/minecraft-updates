@@ -2,9 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 
 import htmlParser from "npm:node-html-parser";
+import Version from "./util/version.ts";
 
 export interface ArticleData {
-    version: string;
+    version: Version;
     thumbnail: string | null;
     article: {
         id: number;
@@ -17,18 +18,6 @@ export interface ArticleData {
 };
 
 export default class Changelog {
-    public static extractVersion(version: string): number[] {
-        const regex = /(\d+)\.(\d+)(?:\.(\d+))?(?:\.(\d+))?/;
-        try {
-            const result = regex.exec(version);
-            if (result != void 0) {
-                const [ _, major, minor, patch, revision ] = result.map(Number);
-                return [ major, minor, patch || 0, revision ];
-            };
-        } catch {};
-        return [ 0, 0, 0 ];
-    };
-
     public static async fetchLatestChangelog(
         callback: (isPreivew: boolean, data: ArticleData) => void
     ) {
@@ -53,26 +42,32 @@ export default class Changelog {
         callback(false, formatArticle(stable));
     };
 
-    public static getLatestSavedVersion(isPreview: boolean): string {
+    public static getLatestSavedVersion(isPreview: boolean): Version {
         if (!fs.existsSync("data")) {
             fs.mkdirSync("data");
         };
 
-        const article = path.join("data",
+        const articlePath = path.join("data",
             (isPreview ? "preview-articles" : "stable-articles").concat(".json"));
         
-        if (!fs.existsSync(article)) {
-            return "0.0.0";
+        if (!fs.existsSync(articlePath)) {
+            return new Version(0, 0, 0);
         };
 
         const data: ArticleData[] = JSON.parse(
-            fs.readFileSync(article).toString()
+            fs.readFileSync(articlePath).toString()
         );
 
-        return data.sort(
-            ({ article: a }, { article: b }) =>
-                new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        )[0].version;
+        const article = data.sort(
+            ({ article: a }, { article: b }) => {
+                const encodedA = Version.fromString(a.title).encode();
+                const encodedB = Version.fromString(b.title).encode();
+
+                return encodedB - encodedA;
+            },
+        )[0];
+
+        return Version.fromString(article?.article?.title);
     };
 
     public static saveArticle(isPreview: boolean, data: ArticleData) {
@@ -103,10 +98,7 @@ export function formatArticle(article: any): ArticleData {
     const imageSrc = parsed.getElementsByTagName("img")[0]?.getAttribute("src");
 
     return {
-        version: Changelog
-            .extractVersion(article.name)
-            ?.filter((i) => !Number.isNaN(i))
-            ?.join("."),
+        version: Version.fromString(article.name),
         thumbnail: (
             imageSrc?.startsWith("https://feedback.minecraft.net/hc/article_attachments/")
             ? imageSrc : null

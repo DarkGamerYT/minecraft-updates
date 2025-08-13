@@ -7,7 +7,7 @@ const { version } = JSON.parse(fs.readFileSync("package.json").toString());
 Logger.log(LogLevel.Info, "Version:", version);
 
 // Integrations
-import { emitChangelog, emitPlatformRelease, emitBDS } from "../integrations/index.ts";
+import * as Integrations from "../integrations/index.ts";
 import Changelog, { ArticleData } from "./changelog.ts";
 
 
@@ -28,20 +28,15 @@ Platforms.push(new Android);
 async function platformLoop(isPreview: boolean, data: ArticleData) {
     for (const platform of Platforms) {
         if (isPreview !== platform.fetchPreview
-            || data.version === platform.latestVersion)
+            || data.version.encode() === platform.latestVersion.encode())
             continue;
 
         const version = await platform.fetchLatestVersion();
-        if (data.version !== version)
+        if (data.version.encode() !== version.encode())
             continue;
 
-        Logger.log(LogLevel.Debug, "New platform release:", platform.name, "- version:", version);
-        if (platform.name === "Dedicated") {
-            emitBDS({ isPreview, version: data.version });
-        }
-        else {
-            emitPlatformRelease(platform);
-        };
+        Logger.log(LogLevel.Debug, "New platform release:", platform.name, "- version:", version.toString());
+        Integrations.emitPlatformRelease(platform);
     };
 
     const allDone = Platforms
@@ -52,8 +47,11 @@ async function platformLoop(isPreview: boolean, data: ArticleData) {
         );
 
     const timeSinceRelease = new Date().getTime() - new Date(data.article.updated_at).getTime();
-    if (true === allDone || timeSinceRelease > 24 * 60 * 60)
+    if (true === allDone || timeSinceRelease > 24 * 60 * 60) {
+        Logger.log(LogLevel.Debug, data.version.toString(), "-", "All platforms done!");
+        Integrations.emitAllPlatformsDone(isPreview, data);
         return;
+    };
 
     await new Promise((resolve) => setTimeout(resolve, 15000)); // Sleep for 15 seconds
     platformLoop(isPreview, data);
@@ -64,28 +62,26 @@ async function platformLoop(isPreview: boolean, data: ArticleData) {
 function loop() {
     Changelog.fetchLatestChangelog((isPreview, data) => {
         if (true === isPreview) {
-            const preview = Changelog.getLatestSavedVersion(true);
-            if (preview === data.version)
+            const preview = Changelog.getLatestSavedVersion(true).encode();
+            if (preview === data.version.encode())
                 return;
 
-            emitChangelog(isPreview, false, data);
+            Integrations.emitChangelog(isPreview, false, data);
         }
         else {
-            const stable = Changelog.getLatestSavedVersion(false);
-            if (stable === data.version)
+            const stable = Changelog.getLatestSavedVersion(false).encode();
+            if (stable === data.version.encode())
                 return;
 
-            const patch = Changelog.extractVersion(data.version)[2];
-            const isHotfix = patch > Math.floor(patch / 10) * 10;
-
-            emitChangelog(isPreview, isHotfix, data);
+            const isHotfix = data.version.patch > Math.floor(data.version.patch / 10) * 10;
+            Integrations.emitChangelog(isPreview, isHotfix, data);
         };
 
         Logger.log(LogLevel.Debug, "New release post:", data.article.title);
 
         Changelog.saveArticle(isPreview, data);
         platformLoop(isPreview, data);
-    }).catch(() => {});
+    }).catch(console.error);
 };
 
 setTimeout(loop, 7500);

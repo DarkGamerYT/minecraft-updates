@@ -16,7 +16,12 @@ async function main() {
 
     while (status.code !== 0) {
         status = await runScript(Deno.args);
-        Logger.log(LogLevel.Error, "Process terminated. Status:", { ...status });
+        Logger.log(LogLevel.Debug, "Process terminated. Status:", { ...status });
+
+        if (!status.success) {
+            console.log();
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+        };
     };
 
     Logger.log(LogLevel.Debug, "Process completed successfully");

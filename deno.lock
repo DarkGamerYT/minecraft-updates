@@ -5,7 +5,8 @@
     "npm:discord.js@^14.19.3": "14.21.0",
     "npm:dotenv@^16.5.0": "16.5.0",
     "npm:google-play-scraper@^10.0.1": "10.0.1",
-    "npm:masto@^7.1.0": "7.2.0_ws@8.18.3"
+    "npm:masto@^7.1.0": "7.2.0_ws@8.18.3",
+    "npm:node-html-parser@^7.0.1": "7.0.1"
   },
   "npm": {
     "@discordjs/builders@1.11.3": {
@@ -423,6 +424,10 @@
         "responselike"
       ]
     },
+    "he@1.2.0": {
+      "integrity": "sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==",
+      "bin": true
+    },
     "header-case@2.0.4": {
       "integrity": "sha512-H/vuk5TEEVZwrR0lp2zed9OCo1uAILMlx0JEMgC26rzyJJ3N1v6XkwHHXJQdR2doSjcGPM6OKPYoJgf0plJ11Q==",
       "dependencies": [
@@ -537,6 +542,13 @@
       "dependencies": [
         "lower-case",
         "tslib"
+      ]
+    },
+    "node-html-parser@7.0.1": {
+      "integrity": "sha512-KGtmPY2kS0thCWGK0VuPyOS+pBKhhe8gXztzA2ilAOhbUbxa9homF1bOyKvhGzMLXUoRds9IOmr/v5lr/lqNmA==",
+      "dependencies": [
+        "css-select",
+        "he"
       ]
     },
     "normalize-url@6.1.0": {
@@ -734,7 +746,8 @@
         "npm:discord.js@^14.19.3",
         "npm:dotenv@^16.5.0",
         "npm:google-play-scraper@^10.0.1",
-        "npm:masto@^7.1.0"
+        "npm:masto@^7.1.0",
+        "npm:node-html-parser@^7.0.1"
       ]
     }
   }

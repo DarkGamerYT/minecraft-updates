@@ -1,7 +1,7 @@
 import { mastodon } from "masto";
 import { ArticleData } from "../../src/changelog.ts";
 import { Platform } from "../../src/platforms/common.ts";
-import { BDS } from "../integration.ts";
+import Dedicated from "../../src/platforms/dedicated.ts";
 import Mastodon from "./index.ts";
 
 async function postChangelog(
@@ -31,20 +31,10 @@ async function postChangelog(
     });
 };
 
-async function bdsRelease(masto: Mastodon, status: mastodon.v1.Status, bds: BDS) {
-    const statusText = "Bedrock Dedicated Server for "
-        + `**${bds.isPreview ? "Minecraft Preview" : "Minecraft Bedrock"} v${bds.version}**`
-        + " is out now!";
-
-    await masto.client.v1.statuses.create({
-        inReplyToId: status.id,
-        status: statusText
-    });
-};
-
 async function platformRelease(masto: Mastodon, status: mastodon.v1.Status, platform: Platform) {
-    const statusText = `**${platform.fetchPreview ? "Minecraft Preview" : "Minecraft Bedrock"} v${platform.latestVersion}**`
-        + ` is out now on the ${platform.name}!`;
+    const statusText = platform.name === Dedicated.platform
+        ? `Bedrock Dedicated Server for **${platform.fetchPreview ? "Minecraft Preview" : "Minecraft"} v${platform.latestVersion}**  is out now!`
+        : `**${platform.fetchPreview ? "Minecraft Preview" : "Minecraft Bedrock"} v${platform.latestVersion}** is out now on the ${platform.name}!`;
 
     await masto.client.v1.statuses.create({
         inReplyToId: status.id,
@@ -68,7 +58,7 @@ export async function newChangelog(
         };
 
         if (isPreview !== platform.fetchPreview
-            || data.version !== platform.latestVersion)
+            || data.version.encode() !== platform.latestVersion.encode())
             return;
 
         platformRelease(masto, post, platform);
@@ -76,20 +66,13 @@ export async function newChangelog(
     };
     masto.on("platformRelease", platformListener);
 
-    // BDS Release
-    const bdsListener = async (bds: BDS) => {
-        const post = await status;
-        if (post == void 0) {
-            masto.off("platformRelease", platformListener);
-            return;
-        };
-
-        if (isPreview !== bds.isPreview
-            || data.version !== bds.version)
+    const allDone = (mcPreview: boolean, articleData: ArticleData) => {
+        if (isPreview !== mcPreview
+            || data.version.encode() !== articleData.version.encode())
             return;
 
-        bdsRelease(masto, post, bds);
-        masto.off("BDS", bdsListener);
+        masto.off("platformRelease", platformListener);
+        masto.off("allPlatformsDone", allDone);
     };
-    masto.on("BDS", bdsListener);
+    masto.on("allPlatformsDone", allDone);
 };

@@ -3,9 +3,8 @@ const isDev = process.argv.includes("--dev");
 
 import { ArticleData } from "../../src/changelog.ts";
 import { Platform } from "../../src/platforms/common.ts";
-import { BDS } from "../integration.ts";
+import Dedicated from "../../src/platforms/dedicated.ts";
 import Discord from "./index.ts";
-import Logger, { LogLevel } from "../../src/util/logger.ts";
 
 const config = JSON.parse(
     fs.readFileSync(
@@ -133,16 +132,19 @@ async function platformRelease(post: ForumThreadChannel, platform: Platform) {
     const container = new ContainerBuilder();
     container.addTextDisplayComponents(
         new TextDisplayBuilder()
-        .setContent(
-            `**${platform.fetchPreview ? "Minecraft Preview" : "Minecraft"} v${platform.latestVersion}**`
-            + ` is out now on the ${platform.name}!`
+        .setContent(platform.name === Dedicated.platform
+            ? `Bedrock Dedicated Server for **${platform.fetchPreview ? "Minecraft Preview" : "Minecraft"} v${platform.latestVersion}**  is out now!`
+            : `**${platform.fetchPreview ? "Minecraft Preview" : "Minecraft"} v${platform.latestVersion}** is out now on the ${platform.name}!`
         ),
     );
                         
     const row = new ActionRowBuilder<ButtonBuilder>();
     row.addComponents([
         new ButtonBuilder()
-            .setLabel("Open ".concat(platform.name))
+            .setLabel(platform.name === Dedicated.platform
+                ? "Download Bedrock Dedicated Server"
+                : "Open ".concat(platform.name)
+            )
             .setStyle(ButtonStyle.Link)
             .setEmoji({ id: "1090311572024463380", name: "feedback" })
             .setURL(platform.download),
@@ -154,44 +156,12 @@ async function platformRelease(post: ForumThreadChannel, platform: Platform) {
             components: [ container, row ],
         });
 
+        message.pin()
+            .catch(() => {});
+
         if (platform.name === "Microsoft Store") {
             pingMembers(message);
         };
-
-        message.pin().catch(() => {});
-    }
-    catch(error) {
-        console.error(error);
-    };
-};
-
-async function bdsRelease(post: ForumThreadChannel, bds: BDS) {
-    const container = new ContainerBuilder();
-    container.addTextDisplayComponents(
-        new TextDisplayBuilder()
-        .setContent(
-            "Bedrock Dedicated Server for "
-            + `**${bds.isPreview ? "Minecraft Preview" : "Minecraft"} v${bds.version}**`
-            + " is out now!"
-        ),
-    );
-    
-    const row = new ActionRowBuilder<ButtonBuilder>();
-    row.addComponents([
-        new ButtonBuilder()
-        .setLabel("Download Bedrock Dedicated Server")
-        .setStyle(ButtonStyle.Link)
-        .setEmoji({ id: "1090311574423609416", name: "changelog" })
-        .setURL("https://www.minecraft.net/en-us/download/server/bedrock"),
-    ]);
-    
-    try {
-        const message = await post.send({
-            flags: MessageFlags.IsComponentsV2,
-            components: [ container, row ],
-        });
-
-        message.pin().catch(() => {});
     }
     catch(error) {
         console.error(error);
@@ -214,30 +184,22 @@ export async function newChangelog(
         };
 
         if (isPreview !== platform.fetchPreview
-            || data.version !== platform.latestVersion)
+            || data.version.encode() !== platform.latestVersion.encode())
             return;
 
-        platformRelease(post, platform);
-        discord.off("platformRelease", platformListener);
+        await platformRelease(post, platform);
     };
     discord.on("platformRelease", platformListener);
-                    
-    // BDS Release
-    const bdsListener = async (bds: BDS) => {
-        const post = await channel;
-        if (post == void 0) {
-            discord.off("platformRelease", platformListener);
-            return;
-        };
 
-        if (isPreview !== bds.isPreview
-            || data.version !== bds.version)
+    const allDone = (mcPreview: boolean, articleData: ArticleData) => {
+        if (isPreview !== mcPreview
+            || data.version.encode() !== articleData.version.encode())
             return;
 
-        bdsRelease(post, bds);
-        discord.off("BDS", bdsListener);
+        discord.off("platformRelease", platformListener);
+        discord.off("allPlatformsDone", allDone);
     };
-    discord.on("BDS", bdsListener);
+    discord.on("allPlatformsDone", allDone);
 
     const post = await channel;
     if (post == void 0)
