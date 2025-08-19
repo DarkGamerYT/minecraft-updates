@@ -133,7 +133,7 @@ async function platformRelease(post: ForumThreadChannel, platform: Platform) {
     container.addTextDisplayComponents(
         new TextDisplayBuilder()
         .setContent(platform.name === Dedicated.platform
-            ? `Bedrock Dedicated Server for **${platform.fetchPreview ? "Minecraft Preview" : "Minecraft"} v${platform.latestVersion}**  is out now!`
+            ? `Bedrock Dedicated Server for **${platform.fetchPreview ? "Minecraft Preview" : "Minecraft"} v${platform.latestVersion}** is out now!`
             : `**${platform.fetchPreview ? "Minecraft Preview" : "Minecraft"} v${platform.latestVersion}** is out now on the ${platform.name}!`
         ),
     );

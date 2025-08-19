@@ -33,7 +33,7 @@ async function postChangelog(
 
 async function platformRelease(masto: Mastodon, status: mastodon.v1.Status, platform: Platform) {
     const statusText = platform.name === Dedicated.platform
-        ? `Bedrock Dedicated Server for **${platform.fetchPreview ? "Minecraft Preview" : "Minecraft"} v${platform.latestVersion}**  is out now!`
+        ? `Bedrock Dedicated Server for **${platform.fetchPreview ? "Minecraft Preview" : "Minecraft"} v${platform.latestVersion}** is out now!`
         : `**${platform.fetchPreview ? "Minecraft Preview" : "Minecraft Bedrock"} v${platform.latestVersion}** is out now on the ${platform.name}!`;
 
     await masto.client.v1.statuses.create({
